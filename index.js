@@ -12,10 +12,16 @@ function gotosignup (){
 
 }
 
+function gotomyaccount (){
+  window.location.href = 'myaccount.html';
+
+}
+
+
 
 loginhome.addEventListener('click', gotologin);
 signuphome.addEventListener('click', gotosignup);
-
+accountbtn.addEventListener('click', gotomyaccount);
 
 
 
@@ -56,79 +62,159 @@ const db = getDatabase(app);
 
 //initial page load projects
 
+const posterThumbnailsDiv = document.getElementById('posterthumbnails');
+
+
 function onPageLoad() {
-    const projectsRef = ref(db, 'accounts');
-  
-    // Fetch data from Firebase
-    get(projectsRef)
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          const accounts = snapshot.val();
-  
-          // Initialize an array to store project names
-          const publicProjects = [];
-  
-          // Iterate through user accounts
-          for (const userId in accounts) {
-            if (accounts.hasOwnProperty(userId)) {
-              const userProjects = accounts[userId].myprojects;
-  
-              // Iterate through projects of each user
-              for (const projectName in userProjects) {
-                if (userProjects.hasOwnProperty(projectName)) {
-                  const project = userProjects[projectName];
-  
-                  // Check if the project is public
-                  if (project.public === true) {
-                    // Add the project name to the array
-                    publicProjects.push(projectName);
-                  }
+
+  //Nav Buttons
+
+  const userDataString = localStorage.getItem('userData');
+  if (userDataString) {
+
+
+    document.getElementById('accountbtn').style.display = "block";
+    const userData = JSON.parse(userDataString);
+    const username = userData.displayname;
+    document.getElementById('accountbtn').textContent = username;
+
+    document.getElementById('loginhome').style.display = "none";
+    document.getElementById('signuphome').style.display = "none";
+
+  }else{
+    document.getElementById('accountbtn').style.display = "none";
+    document.getElementById('loginhome').style.display = "block";
+    document.getElementById('signuphome').style.display = "block";
+
+  }
+
+
+
+
+
+
+
+
+
+  const projectsRef = ref(db, 'accounts');
+
+  // Fetch data from Firebase
+  get(projectsRef)
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        const accounts = snapshot.val();
+
+        // Initialize an array to store project names
+        const publicProjects = [];
+
+        // Iterate through user accounts
+        for (const userId in accounts) {
+          if (accounts.hasOwnProperty(userId)) {
+            const userProjects = accounts[userId].myprojects;
+            const userDisplayName = accounts[userId].displayname; // Fetch display name
+
+            // Iterate through projects of each user
+            for (const projectName in userProjects) {
+              if (userProjects.hasOwnProperty(projectName)) {
+                const project = userProjects[projectName];
+
+                // Check if the project is public
+                if (project.public === true) {
+                  // Create a container div for each project
+                  const projectContainer = document.createElement('div');
+                  projectContainer.classList.add('project-container'); // Add a class to the container div
+
+                  // Create a header (h3) for the project name
+                  
+                  
+                  
+                
+
+// Combine HTML and CSS
+const combinedCode = `<html><head><style>${project.css}*{transform: scale(0.6);
+  transform-origin: top left;}</style></head><body>${project.html}</body></html>`;
+
+// Create a container for the preview
+const previewContainer = document.createElement('div');
+previewContainer.classList.add('preview-container'); // Add a class for styling
+
+// Append the preview container to the project container
+projectContainer.appendChild(previewContainer);
+
+// Create an iframe
+const iframeElement = document.createElement('iframe');
+iframeElement.classList.add('preview-iframe'); // Add a class for styling
+
+// Set srcdoc attribute to combined HTML and CSS
+iframeElement.srcdoc = combinedCode;
+
+// Append the iframe to the preview container
+previewContainer.appendChild(iframeElement);
+
+// Create an overlay div
+const overlayDiv = document.createElement('div');
+overlayDiv.classList.add('overlay'); // Add a class for styling
+
+// Append the overlay div to the preview container
+projectContainer.appendChild(overlayDiv);
+
+// Add a click event listener to the overlay div
+overlayDiv.addEventListener('click', function () {
+    // Redirect to the next page or perform other actions
+    window.location.href = `view.html?v=${projectName}`;
+});
+
+
+
+
+
+const projectHeader = document.createElement('h3');
+                  projectHeader.textContent = project.projectname;
+                  projectHeader.classList.add('project-name'); // Add a class to the header (h3)
+
+                  // Add event listener to the container
+                  projectContainer.addEventListener('click', function () {
+                    // Redirect to view.html with the project name as a query parameter
+                    window.location.href = `view.html?v=${projectName}`;
+                  });
+
+                  // Append the header to the container
+                  projectContainer.appendChild(projectHeader);
+
+                  // Add display name to the container
+                  const displayNameElement = document.createElement('p');
+                  displayNameElement.textContent = `${userDisplayName}`;
+                  displayNameElement.classList.add('user-name'); // Add a class to the header (h3)
+                  projectContainer.appendChild(displayNameElement);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                  // Append the container to the 'posterthumbnails' div
+                  posterThumbnailsDiv.appendChild(projectContainer);
                 }
               }
             }
           }
-  
-          // Log the array of project names
-          console.log(publicProjects);
-  
-          // Display the array in the 'posterthumbnails' div
-          const posterThumbnailsDiv = document.getElementById('posterthumbnails');
-  
- 
-            // Create a container div for each project
-            publicProjects.forEach((project) => {
-              const projectContainer = document.createElement('div');
-              projectContainer.classList.add('project-container'); // Add a class to the container div
-
-              // Create a header (h3) for the project name
-              const projectHeader = document.createElement('h3');
-              projectHeader.textContent = project;
-              projectHeader.classList.add('project-name'); // Add a class to the header (h3)
-
-
-              projectContainer.addEventListener('click', function () {
-                // Redirect to view.html with the project name as a query parameter
-                window.location.href = `view.html?v=${project}`;
-              });
-
-
-              // Append the header to the container
-              projectContainer.appendChild(projectHeader);
-  
-              // Append the container to the 'posterthumbnails' div
-              posterThumbnailsDiv.appendChild(projectContainer);
-            });
-  
-          // Append the list to the 'posterthumbnails' div
-          posterThumbnailsDiv.appendChild(list);
-        } else {
-          console.log('No data available');
         }
-      })
-      .catch((error) => {
-        console.error('Error getting data:', error);
-      });
-  }
-  
+      } else {
+        console.log('No data available');
+      }
+    })
+    .catch((error) => {
+      console.error('Error getting data:', error);
+    });
+}
+
   window.onload = onPageLoad;
   

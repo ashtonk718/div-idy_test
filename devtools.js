@@ -34,7 +34,6 @@ const db = getDatabase(app);
 
 const projecturl = new URLSearchParams(window.location.search).get('project');
 console.log(projecturl);
-document.getElementById('proname').value = projecturl;
 
 
 
@@ -45,10 +44,10 @@ const userData = JSON.parse(userDataString);
 
 const dbref = ref(db);
 
-console.log(dbref, 'accounts/' + userData.useridnumber + "/myprojects/" + proname.value + "/");
+console.log(dbref, 'accounts/' + userData.useridnumber + "/myprojects/" + projecturl + "/");
 
 
-get(child(dbref, 'accounts/' + userData.useridnumber + "/myprojects/" + proname.value + "/"))
+get(child(dbref, 'accounts/' + userData.useridnumber + "/myprojects/" + projecturl + "/"))
 .then((snapshot) => {
         
               if (snapshot.exists()) {
@@ -60,13 +59,14 @@ get(child(dbref, 'accounts/' + userData.useridnumber + "/myprojects/" + proname.
             const cssCode = snapshot.val().css
             const jsCode = snapshot.val().js
             const publicload = snapshot.val().public
+            const projectnameload = snapshot.val().projectname
 
            
         
 document.getElementById('html-input').value = htmlCode
 document.getElementById('css-input').value = cssCode
 document.getElementById('js-input').value = jsCode
-
+document.getElementById('proname').value = projectnameload;
 
 
 // Set the initial state of the toggle switch and toggle text
@@ -120,16 +120,21 @@ outputDocument.close();
 function saveproject (){
 
 
-console.log(db, 'accounts/' + userData.useridnumber + "/myprojects/" + proname.value + "/")
+console.log(db, 'accounts/' + userData.useridnumber + "/myprojects/" + projecturl + "/")
 
     
 
 
-    set(ref(db, 'accounts/' + userData.useridnumber + "/myprojects/" + proname.value + "/"),{
+    set(ref(db, 'accounts/' + userData.useridnumber + "/myprojects/" + projecturl + "/"),{
         html: document.getElementById('html-input').value,
         css: document.getElementById('css-input').value,
         js: document.getElementById('js-input').value,
-        public: document.getElementById('toggleText').innerHTML.includes("Public")
+        public: document.getElementById('toggleText').innerHTML.includes("Public"),
+        projectname: document.getElementById('proname').value
+
+
+
+
         })
         .then(()=>{
         
@@ -171,6 +176,10 @@ console.log(db, 'accounts/' + userData.useridnumber + "/myprojects/" + proname.v
 }
 
 
+
+
+//Toggle Button
+
 document.getElementById('toggleSwitch').addEventListener('change', function () {
     const toggleText = document.getElementById('toggleText');
     toggleText.textContent = this.checked ? 'Public' : 'Private';
@@ -181,11 +190,12 @@ if (toggleText.textContent == "Public"){
 
     console.log("Public")
 
-    set(ref(db, 'accounts/' + userData.useridnumber + "/myprojects/" + proname.value + "/"),{
+    set(ref(db, 'accounts/' + userData.useridnumber + "/myprojects/" + projecturl + "/"),{
         public: true,
         html: document.getElementById('html-input').value,
         css: document.getElementById('css-input').value,
         js: document.getElementById('js-input').value,
+        projectname: document.getElementById('proname').value
         })
         .then(()=>{
         alert("data stored successfully")
@@ -200,11 +210,12 @@ if (toggleText.textContent == "Public"){
 } else {
     console.log("Private")
 
-    set(ref(db, 'accounts/' + userData.useridnumber + "/myprojects/" + proname.value + "/"),{
+    set(ref(db, 'accounts/' + userData.useridnumber + "/myprojects/" + projecturl + "/"),{
         public: false,
         html: document.getElementById('html-input').value,
         css: document.getElementById('css-input').value,
         js: document.getElementById('js-input').value,
+        projectname: document.getElementById('proname').value
         
         })
         .then(()=>{

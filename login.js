@@ -113,14 +113,22 @@ signupbtn.addEventListener('click', createanewaccountuser);
 
 
 
+// file1.js
+const emailInput = document.getElementById('loginemail');
+const passwordInput = document.getElementById('loginpassword');
+
+export { emailInput, passwordInput };
 
 
 
 
 
 function logintoaccountuser() {
-  const email = document.getElementById('loginemail').value;
-  const password = document.getElementById('loginpassword').value;
+   
+
+const email = document.getElementById('loginemail').value;
+const password = document.getElementById('loginpassword').value;
+
 
   const auth = getAuth(); // Change this line
 

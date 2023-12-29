@@ -34,62 +34,89 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebas
   const db = getDatabase();
 
 
+
+
+
+
+
 // Retrieve data from local storage
 const userDataString = localStorage.getItem('userData');
 
 if (userDataString) {
-  // Parse the JSON string into a JavaScript object
+
+
   const userData = JSON.parse(userDataString);
+
+  const userid = userData.useridnumber;
+
+  
+     
+  
+  
+        // Assuming you have a reference to the user's data
+        const userRef = ref(db, 'accounts/' + userid);
+        console.log(userRef)
+  
+        // Fetch user data from Firebase
+        get(userRef)
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              const userData = snapshot.val();
+              console.log("User data:", userData);
+  
+            
+              localStorage.setItem('userData', JSON.stringify(userData));
+  
+  
+              // Now you can use the display name as neededz
+            } else {
+              console.log("User data not found.");
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching user data:", error.message);
+          });
+  
+  
+  
+        
+  
+
+  
+  // Parse the JSON string into a JavaScript object
 
   // Access displayname
   const displayName = userData.displayname;
   console.log("Display Name:", displayName);
-document.getElementById('displayname').innerHTML = "Welcome " + displayName;
+  document.getElementById('displayname').innerHTML = "Welcome " + displayName;
 
-
-
-console.log(userData.myprojects)
-
-
+  console.log(userData.useridnumber);
 
   // Assuming you have a parent div with the class 'projects'
   const projectsContainer = document.querySelector('.projects');
-  
+
   // Iterate over myprojects and create a div for each project
-  for (const projectName in userData.myprojects) {
-    if (userData.myprojects.hasOwnProperty(projectName)) {
-      const project = userData.myprojects[projectName];
-  
-      // Create a div for the project
-      const projectDiv = document.createElement('div');
-      projectDiv.classList.add('myaccountprojects');
-  
-      // Set the text content of the div to the project name
-      projectDiv.textContent = projectName;
-  
+  for (const projectNumber in userData.myprojects) {
+      if (userData.myprojects.hasOwnProperty(projectNumber)) {
+          const project = userData.myprojects[projectNumber];
 
-// Set the text content of the div to the project name
-projectDiv.textContent = projectName;
+          // Create a div for the project
+          const projectDiv = document.createElement('div');
+          projectDiv.classList.add('myaccountprojects');
 
-// Add a click event listener
-projectDiv.addEventListener('click', function() {
-  // Redirect to devtools.html with the project name as a query parameter
-  window.location.href = 'devtools.html?project=' + projectName;
-});
+          // Set the innerHTML of the div to the project name and number with a line break
+          projectDiv.innerHTML = `${project.projectname} <br> ${projectNumber}`;
 
+          // Add a click event listener
+          projectDiv.addEventListener('click', function () {
+              // Redirect to devtools.html with the project number as a query parameter
+              window.location.href = 'devtools.html?project=' + projectNumber;
+          });
 
-
-
-
-
-
-
-      // Append the project div to the parent container
-      projectsContainer.appendChild(projectDiv);
-    }
+          // Append the project div to the parent container
+          projectsContainer.appendChild(projectDiv);
+      }
   }
-  
-
 
   // Access myprojects
   const myProjects = userData.myprojects;
@@ -101,11 +128,58 @@ projectDiv.addEventListener('click', function() {
 
 
 
-
-newproject.addEventListener('click', saveproject);
+newproject.addEventListener('click', createnewproject);
 
 function createnewproject () {
+  document.getElementById("newprojectnamemodal").style.display = "block"
+}
 
+closenew.addEventListener('click', closenewproject);
+function closenewproject () {
+  document.getElementById("newprojectnamemodal").style.display = "none"
+}
+
+
+
+
+
+
+createnewprojectbtn.addEventListener('click', addnewproject);
+function addnewproject () {
+
+
+
+  function generateRandom16DigitNumber() {
+    let randomNumber = '';
+    for (let i = 0; i < 16; i++) {
+        // Generate a random digit (0 to 9) and convert it to a string
+        let randomDigit = Math.floor(Math.random() * 10).toString();
+        // Concatenate the digit to the result
+        randomNumber += randomDigit;
+    }
+    return randomNumber;
+}
+
+// project number
+const random16DigitNumber = generateRandom16DigitNumber();
+console.log(random16DigitNumber);
+
+
+let projectnameinput = document.getElementById("projectnameinput").value
+
+const userDataString = localStorage.getItem('userData');
+
+const userData = JSON.parse(userDataString);
+
+set(ref(db, 'accounts/' + userData.useridnumber + "/myprojects/" + random16DigitNumber + "/"),{
+  html: "",
+  css: "",
+  js: "",
+  public: false,
+projectname: projectnameinput
+  })
+  .then(()=>{alert("data stored successfully");  window.location.href = 'devtools.html?project=' + random16DigitNumber;
+}).catch((error)=>{alert("did not work sucka"+error);});
 
 
 
@@ -113,5 +187,8 @@ function createnewproject () {
 
 
 }
+
+
+
 
 

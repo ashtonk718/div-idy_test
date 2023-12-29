@@ -146,3 +146,112 @@ input:checked + .slider:before {
     border-radius: 50%;
 }
 
+
+
+
+
+
+
+
+/* MY account */
+
+
+#newprojectnamemodal{
+
+display: none;
+
+}
+
+
+
+
+
+/* home */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Adjust the z-index to ensure the overlay is on top of the content */
+}
+
+
+
+#posterthumbnails{
+
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+
+}
+
+
+
+
+.project-container {
+  position: relative;
+  margin: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px; /* Adds rounded corners */
+  overflow: hidden; /* Ensures content doesn't overflow with rounded corners */
+  transition: transform 0.3s ease-in-out; /* Adds a smooth transition effect */
+  font-family: 'Arial', sans-serif; /* Change the font to Arial or any other font you prefer */
+}
+
+.project-container:hover {
+  transform: scale(1.05); /* Enlarges the container on hover */
+}
+
+
+iframe{
+
+border: none;
+
+}
+
+
+
+.project-name {
+  color: #333; /* Change the color of the project name */
+  font-size: 20px; /* Adjust the font size for the project name */
+  margin: 10px 0; /* Add some margin for spacing */
+  margin-left: 10px;
+}
+
+.user-name {
+  color: #999; /* Change the color of the user name */
+  font-size: 14px; /* Adjust the font size for the user name */
+  margin-bottom: 10px; /* Add margin at the bottom */
+  margin-left: 10px;
+
+}
+
+.nav{
+
+  width: 100%; /* or specify the width you want */
+
+
+}
+
+
+#loginhome{
+float: right;
+display: none;
+
+}
+
+
+#signuphome{
+
+  float: right;
+  display: none;
+
+}
+
+
+#accountbtn{
+
+  float: right;
+  display: none;
+}
